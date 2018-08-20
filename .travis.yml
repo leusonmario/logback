@@ -1,4 +1,25 @@
+
+sudo: required
 language: java
-notifications:
-  email:
-      - logback-dev@qos.ch
+
+jdk:
+  - oraclejdk8
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=RootCauseFirstThrowableProxyConverterTest#integration -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/logback/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "MZ6j4agqI3/Yh3lRLmNNRzgWmDpq0ulefUQ3UTHQd4hkyxJ3nr4YzbB7vhnUShz0J9WZ1mas9EICUtKEAT9j4sYfxDHmaqnLRl2WxjwojvnWDrnP8pcXEGJLKAARDLCRc0NJnK45QeBYeojBoTbXPOywpaysm8/XbwA4p4rjMyx4AYIURhsxbw91CtGSVED+UTdzIfvixjcnL1PGHFWTF3nf4tBjak9Lyr+Rl7EjT0eyRpoedlABHohl61t6HE+IeUq/oYteKnb9KVVg2CqGF+Ev4k0yqZtxzbAU8r9b3mRf2/+bIAEM9KLaefmMLOQQOsmHAJnzZiIcvJ0NziU/PIQ50IwSfIlts/FwOyijbZYGLQOr58mpaAZRUJH6mDwK+ZoMu9JR001Rp6azgYxJXfI0yb2eyCIVlAH3Ocj9G37CH8qpKvmW4lkWUgWx4gRkuGR/sgIFz7+D8JKIQtCNE/Dwalq/QGUeMIScXGRRPZA8wy9l+60fppxZsg4M5dw65UxfHzLz0XKOYYFvZtw1VQmRijnONerSL4OmRRKM2ZkNv0z32lb74okvfleeXfFJNDtPCuOc2aXkI1BF2rJLo+rqCR9Yp1K/UbDQ85sdNgvsXLbd2mNTLe2ifq+TtVuyrj6cx5xJQri0jII4fVeijOzMhjiZAkgWcjp69Y1fz/o="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
